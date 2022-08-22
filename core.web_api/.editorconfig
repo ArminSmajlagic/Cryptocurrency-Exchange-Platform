@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# RS1004: Recommend adding language support to diagnostic analyzer.
+dotnet_diagnostic.RS1004.severity = silent
