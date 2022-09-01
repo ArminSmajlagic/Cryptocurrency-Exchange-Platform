@@ -127,6 +127,6 @@
     <value>https://localhost:7291/</value>
   </data>
   <data name="server" xml:space="preserve">
-    <value>http://localhost:5192/</value>
+    <value>https://rs2seminarski.herokuapp.com/</value>
   </data>
 </root>
