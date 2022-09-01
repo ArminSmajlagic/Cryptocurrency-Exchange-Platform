@@ -19,6 +19,7 @@ public class UserReadServis : ReadServis<modeli.trading.User.User,user,object>, 
     public override async Task<IEnumerable<modeli.trading.User.User>> GetAll(object searchParam)
     {
         var set = Context.korisnici;
+        var wcash_id = Context.valute.FirstOrDefault(x=>x.naziv == "WCash").valuta_id;
         var result = new List<modeli.trading.User.User>();
         foreach (var item in set)
         {
@@ -28,7 +29,7 @@ public class UserReadServis : ReadServis<modeli.trading.User.User,user,object>, 
 
             if (wallet != null)
             {
-                var imovina = Context.wallet_imovine.FirstOrDefault(x => x.walletId == wallet.id && x.valuta_id == 15);
+                var imovina = Context.wallet_imovine.FirstOrDefault(x => x.walletId == wallet.id && x.valuta_id == wcash_id);
 
                 if (imovina != null)
                 {
@@ -46,6 +47,7 @@ public class UserReadServis : ReadServis<modeli.trading.User.User,user,object>, 
     public override async Task<modeli.trading.User.User> GetById(int id)
     {
         var set = Context.korisnici;
+        var wcash_id = Context.valute.FirstOrDefault(x => x.naziv == "WCash").valuta_id;
 
         var result = set.FirstOrDefault(x => x.user_id == id);
 
@@ -57,7 +59,7 @@ public class UserReadServis : ReadServis<modeli.trading.User.User,user,object>, 
 
             if (wallet != null)
             {
-                var imovina = Context.wallet_imovine.FirstOrDefault(x => x.walletId == wallet.id && x.valuta_id == 15);
+                var imovina = Context.wallet_imovine.FirstOrDefault(x => x.walletId == wallet.id && x.valuta_id == wcash_id);
 
                 if(imovina != null)
                 {

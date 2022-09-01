@@ -87,13 +87,14 @@ public class UserWriteServis : WriteServis<modeli.trading.User.User, user, UserU
 
         var setImovina = Context.wallet_imovine;
 
-        
+        var wcash_id = Context.valute.FirstOrDefault(x => x.naziv == "WCash").valuta_id;
+
 
         await setImovina.AddAsync(new database.trading.DB_Models.User.Wallet.wallet_imovina() { 
             naziv_valute="WCash",
             walletId = wallet.Entity.id,
             kolicina_valute = 0,
-            valuta_id = 15
+            valuta_id = wcash_id
         });
 
         await Context.SaveChangesAsync();

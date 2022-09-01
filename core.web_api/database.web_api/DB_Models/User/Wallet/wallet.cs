@@ -8,8 +8,8 @@ namespace database.trading.DB_Models.User.Wallet
         public int id { get; set; }
         public int userId { get; set; }
         public user user { get; set; }
-        public int? kreditnaId { get; set; }
-        public kreditna? kreditna { get; set; }
+        //public int? kreditnaId { get; set; }
+        //public kreditna? kreditna { get; set; }
 
     }
 

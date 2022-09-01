@@ -61,6 +61,7 @@ var emailConfig = builder.Configuration
 .GetSection("EmailConfiguration")
 .Get<EmailConfig>();
 
+
 builder.Services.AddSingleton(emailConfig);
 
 // Add services to the container.
@@ -109,13 +110,29 @@ builder.Services.AddSwaggerGen(c =>
                 });
 });
 
+builder.Services.PrepareDatabase();
+
 builder.Services.ProvideServices();
+
 
 builder.Services.AddAutoMapper(typeof(MappingProfili));
 
 //dependency injection for IConfiguring
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<DatabaseContext>();
+    var pleskDbContext = services.GetRequiredService<PleskdbContext>();
+
+
+    context.Database.EnsureCreated();
+
+    pleskDbContext.SeedData();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
@@ -124,7 +141,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseCors(MyAllowSpecificOrigins);
 

@@ -19,7 +19,7 @@ services:
     build:
       context: .
     environment:
-     - ConnectionStrings:sql_db=Server=trading-sql,1433;Database=seminarski_rs2;User=sa;Password=Passcode123!;MultipleActiveResultSets=True;TrustServerCertificate=true;
+     - ConnectionStrings:sql_db=Server=trading-sql,1433;Database=rs2;User=sa;Password=Passcode123!;MultipleActiveResultSets=True;TrustServerCertificate=true;
     ports:
      - 5192:5192
     networks:

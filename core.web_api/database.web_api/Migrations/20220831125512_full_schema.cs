@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace database.trading.Migrations
 {
     /// <inheritdoc />
-    public partial class inheritencefix : Migration
+    public partial class full_schema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -28,20 +28,7 @@ namespace database.trading.Migrations
                     table.PrimaryKey("PK_auth_korisnik", x => x.id);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "kreditneKartice",
-                columns: table => new
-                {
-                    kreditna_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    broj_kartice = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: false),
-                    naziv_izdavaca = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    datum_isteka = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_kreditneKartice", x => x.kreditna_id);
-                });
+            
 
             migrationBuilder.CreateTable(
                 name: "ponude",
@@ -57,21 +44,6 @@ namespace database.trading.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "tipTransakcije",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    naziv = table.Column<int>(type: "int", nullable: false),
-                    opis = table.Column<int>(type: "int", nullable: false),
-                    tip = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tipTransakcije", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "korisnici",
                 columns: table => new
                 {
@@ -80,11 +52,10 @@ namespace database.trading.Migrations
                     spol = table.Column<int>(type: "int", nullable: false),
                     ime_prezime = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     datum_rodjenja = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    stanje_walleta = table.Column<double>(type: "float", nullable: false),
+                    datum_kreiranja = table.Column<DateTime>(type: "datetime2", nullable: false),
                     email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     broj_telefona = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     drzava = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    kreditnaId = table.Column<int>(type: "int", nullable: true),
                     authUserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -96,11 +67,6 @@ namespace database.trading.Migrations
                         principalTable: "auth_korisnik",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_korisnici_kreditneKartice_kreditnaId",
-                        column: x => x.kreditnaId,
-                        principalTable: "kreditneKartice",
-                        principalColumn: "kreditna_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -119,16 +85,17 @@ namespace database.trading.Migrations
                     rank = table.Column<int>(type: "int", nullable: false),
                     last_high = table.Column<double>(type: "float", nullable: false),
                     total_suplay = table.Column<int>(type: "int", nullable: false),
-                    ponudaid = table.Column<int>(type: "int", nullable: true)
+                    ponudaId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_valute", x => x.valuta_id);
                     table.ForeignKey(
-                        name: "FK_valute_ponude_ponudaid",
-                        column: x => x.ponudaid,
+                        name: "FK_valute_ponude_ponudaId",
+                        column: x => x.ponudaId,
                         principalTable: "ponude",
-                        principalColumn: "id");
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -163,7 +130,8 @@ namespace database.trading.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     code = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     userId = table.Column<int>(type: "int", nullable: false),
-                    timeStamp = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    timeStamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    confirmed = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -177,43 +145,132 @@ namespace database.trading.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "transakcije",
+                name: "walleti",
                 columns: table => new
                 {
-                    transakcija_id = table.Column<int>(type: "int", nullable: false)
+                    id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    vrijeme_obavljanja = table.Column<DateTime>(type: "datetime2", nullable: false),
                     userId = table.Column<int>(type: "int", nullable: false),
-                    iz_valutaId = table.Column<int>(type: "int", nullable: true),
-                    u_valutaId = table.Column<int>(type: "int", nullable: true),
-                    tipTransakcijeID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_transakcije", x => x.transakcija_id);
+                    table.PrimaryKey("PK_walleti", x => x.id);
                     table.ForeignKey(
-                        name: "FK_transakcije_korisnici_userId",
+                        name: "FK_walleti_korisnici_userId",
+                        column: x => x.userId,
+                        principalTable: "korisnici",
+                        principalColumn: "user_id",
+                        onDelete: ReferentialAction.Cascade);
+
+                });
+
+            migrationBuilder.CreateTable(
+                name: "histPodaci",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    date = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    high = table.Column<double>(type: "float", nullable: false),
+                    open = table.Column<double>(type: "float", nullable: false),
+                    low = table.Column<double>(type: "float", nullable: false),
+                    close = table.Column<double>(type: "float", nullable: false),
+                    volume = table.Column<int>(type: "int", nullable: false),
+                    market_cap = table.Column<int>(type: "int", nullable: false),
+                    valutaId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_histPodaci", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_histPodaci_valute_valutaId",
+                        column: x => x.valutaId,
+                        principalTable: "valute",
+                        principalColumn: "valuta_id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "narudzbe",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    kreirana = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    userId = table.Column<int>(type: "int", nullable: false),
+                    valutaId = table.Column<int>(type: "int", nullable: false),
+                    kolicina = table.Column<double>(type: "float", nullable: false),
+                    cijena = table.Column<double>(type: "float", nullable: false),
+                    state = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    tip = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_narudzbe", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_narudzbe_korisnici_userId",
                         column: x => x.userId,
                         principalTable: "korisnici",
                         principalColumn: "user_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_transakcije_tipTransakcije_tipTransakcijeID",
-                        column: x => x.tipTransakcijeID,
-                        principalTable: "tipTransakcije",
+                        name: "FK_narudzbe_valute_valutaId",
+                        column: x => x.valutaId,
+                        principalTable: "valute",
+                        principalColumn: "valuta_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "wallet_imovine",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    naziv_valute = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    valuta_id = table.Column<int>(type: "int", nullable: false),
+                    kolicina_valute = table.Column<double>(type: "float", nullable: false),
+                    walletId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_wallet_imovine", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_wallet_imovine_walleti_walletId",
+                        column: x => x.walletId,
+                        principalTable: "walleti",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_transakcije_valute_iz_valutaId",
-                        column: x => x.iz_valutaId,
-                        principalTable: "valute",
-                        principalColumn: "valuta_id");
-                    table.ForeignKey(
-                        name: "FK_transakcije_valute_u_valutaId",
-                        column: x => x.u_valutaId,
-                        principalTable: "valute",
-                        principalColumn: "valuta_id");
                 });
+
+            migrationBuilder.CreateTable(
+                name: "wallet_transakcije",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    walletId = table.Column<int>(type: "int", nullable: false),
+                    vrijeme_obavljanja = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    kolicina_transakcije = table.Column<double>(type: "float", nullable: false),
+                    wcash = table.Column<double>(type: "float", nullable: false),
+                    naziv_valute = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    tip_transakcije_id = table.Column<int>(type: "int", nullable: false),
+                    tip_metode_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_wallet_transakcije", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_wallet_transakcije_walleti_walletId",
+                        column: x => x.walletId,
+                        principalTable: "walleti",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_histPodaci_valutaId",
+                table: "histPodaci",
+                column: "valutaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_korisnici_authUserId",
@@ -221,33 +278,18 @@ namespace database.trading.Migrations
                 column: "authUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_korisnici_kreditnaId",
-                table: "korisnici",
-                column: "kreditnaId");
+                name: "IX_narudzbe_userId",
+                table: "narudzbe",
+                column: "userId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_narudzbe_valutaId",
+                table: "narudzbe",
+                column: "valutaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tokeni_userId",
                 table: "tokeni",
-                column: "userId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_transakcije_iz_valutaId",
-                table: "transakcije",
-                column: "iz_valutaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_transakcije_tipTransakcijeID",
-                table: "transakcije",
-                column: "tipTransakcijeID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_transakcije_u_valutaId",
-                table: "transakcije",
-                column: "u_valutaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_transakcije_userId",
-                table: "transakcije",
                 column: "userId");
 
             migrationBuilder.CreateIndex(
@@ -256,40 +298,62 @@ namespace database.trading.Migrations
                 column: "userId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_valute_ponudaid",
+                name: "IX_valute_ponudaId",
                 table: "valute",
-                column: "ponudaid");
+                column: "ponudaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_wallet_imovine_walletId",
+                table: "wallet_imovine",
+                column: "walletId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_wallet_transakcije_walletId",
+                table: "wallet_transakcije",
+                column: "walletId");
+
+
+            migrationBuilder.CreateIndex(
+                name: "IX_walleti_userId",
+                table: "walleti",
+                column: "userId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "tokeni");
+                name: "histPodaci");
 
             migrationBuilder.DropTable(
-                name: "transakcije");
+                name: "narudzbe");
+
+            migrationBuilder.DropTable(
+                name: "tokeni");
 
             migrationBuilder.DropTable(
                 name: "user_confirmacije");
 
             migrationBuilder.DropTable(
-                name: "tipTransakcije");
+                name: "wallet_imovine");
+
+            migrationBuilder.DropTable(
+                name: "wallet_transakcije");
 
             migrationBuilder.DropTable(
                 name: "valute");
 
             migrationBuilder.DropTable(
-                name: "korisnici");
+                name: "walleti");
 
             migrationBuilder.DropTable(
                 name: "ponude");
 
             migrationBuilder.DropTable(
-                name: "auth_korisnik");
+                name: "korisnici");
 
             migrationBuilder.DropTable(
-                name: "kreditneKartice");
+                name: "auth_korisnik");
         }
     }
 }

@@ -22,14 +22,16 @@ namespace servisi.trading.Repos.Dashboard
 
         public async Task<Report> GetReport()
         {
+            var wcash_id = context.valute.FirstOrDefault(x => x.naziv == "WCash").valuta_id;
+
             var result = new Report();
 
             result.users = new List<modeli.trading.User.User>();
             result.narudzbe = new List<Narudzba>();
 
             var setKorisnika = context.korisnici.Include("authUser").ToList();
-            var setImovina = context.wallet_imovine.Include("wallet").Where(x=>x.valuta_id==15).ToList();
-            var set = context.wallet_imovine.Where(x=>x.valuta_id==15).ToList();
+            var setImovina = context.wallet_imovine.Include("wallet").Where(x=>x.valuta_id== wcash_id).ToList();
+            var set = context.wallet_imovine.Where(x=>x.valuta_id== wcash_id).ToList();
             var setNarudzbi = context.narudzbe.Include("valuta").Include("user").ToList();
 
             foreach (var korisnik in setKorisnika)

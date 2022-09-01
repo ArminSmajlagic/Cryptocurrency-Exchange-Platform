@@ -12,8 +12,8 @@ using database.trading;
 namespace database.trading.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20220603140305_narudzba")]
-    partial class narudzba
+    [Migration("20220831125512_full_schema")]
+    partial class full_schema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -253,6 +253,9 @@ namespace database.trading.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("tip")
+                        .HasColumnType("int");
+
                     b.Property<int>("userId")
                         .HasColumnType("int");
 
@@ -266,41 +269,6 @@ namespace database.trading.Migrations
                     b.HasIndex("valutaId");
 
                     b.ToTable("narudzbe");
-                });
-
-            modelBuilder.Entity("database.trading.DB_Models.Trading.transakcija", b =>
-                {
-                    b.Property<int>("transakcija_id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("transakcija_id"), 1L, 1);
-
-                    b.Property<double>("kolicinaValute")
-                        .HasColumnType("float");
-
-                    b.Property<double>("placeno")
-                        .HasColumnType("float");
-
-                    b.Property<int>("tipTransakcijeID")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("valutaId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("vrijeme_obavljanja")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("walletId")
-                        .HasColumnType("int");
-
-                    b.HasKey("transakcija_id");
-
-                    b.HasIndex("valutaId");
-
-                    b.HasIndex("walletId");
-
-                    b.ToTable("transakcije");
                 });
 
             modelBuilder.Entity("database.trading.DB_Models.User.kreditna", b =>
@@ -342,6 +310,9 @@ namespace database.trading.Migrations
                     b.Property<string>("broj_telefona")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("datum_kreiranja")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("datum_rodjenja")
                         .HasColumnType("datetime2");
@@ -514,21 +485,6 @@ namespace database.trading.Migrations
                     b.Navigation("user");
 
                     b.Navigation("valuta");
-                });
-
-            modelBuilder.Entity("database.trading.DB_Models.Trading.transakcija", b =>
-                {
-                    b.HasOne("database.trading.DB_Models.Kripto.valuta", "valuta")
-                        .WithMany()
-                        .HasForeignKey("valutaId");
-
-                    b.HasOne("database.trading.DB_Models.User.Wallet.wallet", "wallet")
-                        .WithMany()
-                        .HasForeignKey("walletId");
-
-                    b.Navigation("valuta");
-
-                    b.Navigation("wallet");
                 });
 
             modelBuilder.Entity("database.trading.DB_Models.User.user", b =>

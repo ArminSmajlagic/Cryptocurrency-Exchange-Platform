@@ -88,7 +88,7 @@ namespace winforms.trading.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://rs2seminarski.herokuapp.com/.
+        ///   Looks up a localized string similar to http://localhost:5192/.
         /// </summary>
         internal static string server {
             get {

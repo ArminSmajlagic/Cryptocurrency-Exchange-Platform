@@ -34,7 +34,7 @@ public static class ServicesProvider
     public static IServiceCollection ProvideServices(this IServiceCollection services)
     {
         //baza podataka
-        services.AddTransient<DatabaseContext>();
+
         
         //user
         services.AddTransient<IUserWriteServis, UserWriteServis>();
@@ -86,6 +86,17 @@ public static class ServicesProvider
         services.AddTransient<ILogger,LoggerServis>();
 
         //services.AddSingleton<IMapper>();
+        return services;
+    }
+
+    public static IServiceCollection PrepareDatabase(this IServiceCollection services)
+    {
+        services.AddTransient<DatabaseContext>();
+        services.AddTransient<PleskdbContext>();
+
+        //DatabaseContext.CreateDB();
+        //PleskdbContext.SeedData();
+
         return services;
     }
 }

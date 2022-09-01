@@ -5,6 +5,7 @@ using database.trading.DB_Models.User;
 using database.trading.DB_Models.User.Wallet;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using modeli.trading;
 
 namespace database.trading;
@@ -12,16 +13,18 @@ namespace database.trading;
 public class DatabaseContext : DbContext
 {
     private readonly IConfiguration config;
-    public DatabaseContext(IConfiguration config) : base()
+    private readonly ILogger logger;
+    public DatabaseContext(IConfiguration config, ILogger logger) : base()
     {
         this.config = config;
+        this.logger = logger;
+
     }
 
     public DbSet<user> korisnici { get; set; }
     public DbSet<wallet> walleti { get; set; }
     public DbSet<wallet_imovina> wallet_imovine { get; set; }
     public DbSet<walletTransakcija> wallet_transakcije { get; set; }
-    public DbSet<kreditna> kreditneKartice { get; set; }
     public DbSet<narudzba> narudzbe { get; set; }
     public DbSet<auth_user> auth_korisnici { get; set; }
     public DbSet<token> tokeni { get; set; }
@@ -32,18 +35,15 @@ public class DatabaseContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        string connectionString = config.GetConnectionString("sql_db");
+
         if (!optionsBuilder.IsConfigured)
         {
-            if(!string.IsNullOrEmpty(config.GetConnectionString("sql_db")))
-                optionsBuilder.UseSqlServer(config.GetConnectionString("sql_db"), builder => builder.EnableRetryOnFailure());
+                optionsBuilder.UseSqlServer(connectionString, x => { 
+                    x.EnableRetryOnFailure(); 
+                });
         }
     }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        //modelBuilder.Entity<auth_user>().ToTable("auth_korisnik");
-
-    }
-
+    
 }
 

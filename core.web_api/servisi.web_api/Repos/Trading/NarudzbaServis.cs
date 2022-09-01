@@ -27,6 +27,8 @@ namespace servisi.trading.Repos.Trading
 
         public async Task<int> Kupi(NarudzbaUpsertRequest requestBody)
         {
+            var wcash_id = context.valute.FirstOrDefault(x => x.naziv == "WCash").valuta_id;
+
 
             requestBody.kreirana = DateTime.Now;
 
@@ -34,7 +36,7 @@ namespace servisi.trading.Repos.Trading
 
             var setImovinaNarucioca = context.wallet_imovine.Where(x => x.walletId == walletNarucioca.id).ToList();
 
-            wallet_imovina wcashKupca = setImovinaNarucioca.FirstOrDefault(x => x.valuta_id == 15);
+            wallet_imovina wcashKupca = setImovinaNarucioca.FirstOrDefault(x => x.valuta_id == wcash_id);
 
             wallet_imovina valutaKupovine = setImovinaNarucioca.FirstOrDefault(x => x.valuta_id == requestBody.valutaId);
 
@@ -84,7 +86,7 @@ namespace servisi.trading.Repos.Trading
 
                         //povecat wcash prdavcu
 
-                        var prodavacWcash = context.wallet_imovine.First(x => x.valuta_id == 15 && x.walletId == prodavacWallet.id);
+                        var prodavacWcash = context.wallet_imovine.First(x => x.valuta_id == wcash_id && x.walletId == prodavacWallet.id);
 
                         prodavacWcash.kolicina_valute += requestBody.cijena;
 
@@ -110,13 +112,15 @@ namespace servisi.trading.Repos.Trading
         public async Task<int> Prodaj(NarudzbaUpsertRequest requestBody)
         {
 
+            var wcash_id = context.valute.FirstOrDefault(x => x.naziv == "WCash").valuta_id;
+
             requestBody.kreirana = DateTime.Now;
 
             var walletNarucioca = context.walleti.FirstOrDefault(x => x.userId == requestBody.userId);
 
             var setImovinaNarucioca = context.wallet_imovine.Where(x => x.walletId == walletNarucioca.id).ToList();
 
-            wallet_imovina? wcashProdavca = setImovinaNarucioca.FirstOrDefault(x => x.valuta_id == 15);
+            wallet_imovina? wcashProdavca = setImovinaNarucioca.FirstOrDefault(x => x.valuta_id == wcash_id);
 
             wallet_imovina? valutaProdaje = setImovinaNarucioca.FirstOrDefault(x => x.valuta_id == requestBody.valutaId);
 
@@ -144,7 +148,7 @@ namespace servisi.trading.Repos.Trading
                         {
 
                             var kupacValutaInteresa = kupacImovina.FirstOrDefault(x=>x.valuta_id == requestBody.valutaId);
-                            var kupacWCash = kupacImovina.FirstOrDefault(x=>x.valuta_id == 15);
+                            var kupacWCash = kupacImovina.FirstOrDefault(x=>x.valuta_id == wcash_id);
 
                             if (kupacValutaInteresa == null) {
                                 kupacValutaInteresa = new wallet_imovina()
