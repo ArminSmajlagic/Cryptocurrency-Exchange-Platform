@@ -126,6 +126,9 @@
   <data name="localSever" xml:space="preserve">
     <value>https://localhost:7291/</value>
   </data>
+  <data name="pleskServer" xml:space="preserve">
+    <value>https://rs2.p2098.app.fit.ba/</value>
+  </data>
   <data name="server" xml:space="preserve">
     <value>https://rs2seminarski.herokuapp.com/</value>
   </data>

@@ -88,6 +88,15 @@ namespace winforms.trading.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to https://rs2.p2098.app.fit.ba/.
+        /// </summary>
+        internal static string pleskServer {
+            get {
+                return ResourceManager.GetString("pleskServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to https://rs2seminarski.herokuapp.com/.
         /// </summary>
         internal static string server {

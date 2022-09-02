@@ -134,6 +134,95 @@ namespace database.trading
 
             };
 
+            context.wallet_transakcije.AddRange(new List<walletTransakcija>() {
+                 new walletTransakcija(){
+                    walletId = 1,
+                    vrijeme_obavljanja = DateTime.Now,
+                    kolicina_transakcije = 5000,
+                    tip_transakcije_id = 0,
+                    tip_metode_id = 1,
+                    wcash = 5000,
+                                        naziv_valute = "USD"
+
+                },
+                new walletTransakcija(){ 
+                    walletId = 2,
+                    vrijeme_obavljanja = DateTime.Now,
+                    kolicina_transakcije = 5000,
+                    tip_transakcije_id = 0,
+                    tip_metode_id = 1,
+                    wcash = 6000,
+                                        naziv_valute = "USD"
+
+                },
+                new walletTransakcija(){
+                    walletId = 2,
+                    vrijeme_obavljanja = DateTime.Now,
+                    kolicina_transakcije = 1000,
+                    tip_transakcije_id = 1,
+                    tip_metode_id = 1,
+                    wcash = 1000,
+                                        naziv_valute = "USD"
+
+                },
+                new walletTransakcija(){
+                    walletId = 3,
+                    vrijeme_obavljanja = DateTime.Now,
+                    kolicina_transakcije = 5000,
+                    tip_transakcije_id = 0,
+                    tip_metode_id = 1,
+                    wcash = 5000,
+                    naziv_valute = "USD"
+                }
+            });
+
+            context.SaveChanges();
+
+
+            context.narudzbe.AddRange(new List<narudzba>() {
+
+                new narudzba(){
+                    
+                    kreirana = DateTime.Now,
+                    userId = 2,
+                    valutaId = 2,
+                    state = "kreirana",
+                    cijena = 439.3155,
+                    kolicina = 0.01,
+                    tip = 0
+                },
+                new narudzba(){
+                    kreirana = DateTime.Now,
+                    userId = 2,
+                    valutaId = 2,
+                    state = "izvrsena",
+                    cijena = 439.3155,
+                    kolicina = 0.01,
+                    tip = 1
+                },
+                new narudzba(){
+                    kreirana = DateTime.Now,
+                    userId = 3,
+                    valutaId = 2,
+                    state = "izvrsena",
+                    cijena = 439.3155,
+                    kolicina = 0.01,
+                    tip = 0
+                },
+                new narudzba(){
+                    kreirana = DateTime.Now,
+                    userId = 2,
+                    valutaId = 2,
+                    state = "odbijena",
+                    cijena = 439.3155,
+                    kolicina = 0.01,
+                    tip = 0
+                },
+            });
+
+            context.SaveChanges();
+
+
         }
 
 
